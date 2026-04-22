@@ -1,43 +1,39 @@
 from collections import deque
 
-def bfs(grafo, inicio, objetivo):
-    # Cola para explorar nodos
-    cola = deque([inicio])
+def bfs_explicado(grafo, inicio, objetivo):
+    # Guardamos rutas completas para saber cómo llegamos a cada nodo.
+    cola = deque([[inicio]])
     
-    # Visitados para no repetir nodos
-    visitados = set([inicio])
-    
-    # Para reconstruir el camino
-    padres = {inicio: None}
-    
+    # nodos visitados:
+    visitados = {inicio}
+
     while cola:
-        nodo = cola.popleft()
-        
-        if nodo == objetivo:
-            # Reconstruir camino
-            camino = []
-            while nodo is not None:
-                camino.append(nodo)
-                nodo = padres[nodo]
-            return camino[::-1]  # invertido
-        
-        for vecino in grafo[nodo]:
+        # se extrae el primer camino de la fila el más antiguo
+        camino = cola.popleft()
+        # El nodo actual es el último elemento del camino que estamos siguiendo
+        nodo_actual = camino[-1]
+
+        # Prueba si llegamos a la meta
+        if nodo_actual == objetivo:
+            return camino
+
+        # se ven a los vecinos del nodo actual
+        for vecino, costo in grafo.get(nodo_actual, []):
             if vecino not in visitados:
                 visitados.add(vecino)
-                padres[vecino] = nodo
-                cola.append(vecino)
-    
-    return None  # No hay camino
+                # Creamos una copia del camino actual y le añadimos el nuevo vecino
+                nuevo_camino = list(camino)
+                nuevo_camino.append(vecino)
+                # Lo mandamos al final de la cola para ser procesado después
+                cola.append(nuevo_camino)
+                
+    return "Objetivo no alcanzado"
 
-
-# Ejemplo
-grafo = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
+grafo_ejemplo = {
+    'A': [('B', 1), ('C', 1)],
+    'B': [('D', 1), ('E', 1)],
+    'C': [('F', 1)],
+    'D': [], 'E': [], 'F': []
 }
 
-print("BFS:", bfs(grafo, 'A', 'F')) 
+print(f"Resultado BFS: {bfs_explicado(grafo_ejemplo, 'A', 'F')}")
