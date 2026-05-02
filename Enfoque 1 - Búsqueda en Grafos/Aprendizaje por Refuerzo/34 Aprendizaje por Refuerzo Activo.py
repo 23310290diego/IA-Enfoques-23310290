@@ -31,7 +31,7 @@ def aprendizaje_activo():
         
         if nuevo_estado == 2:
             print("¡Llegó a la meta!")
-            estado = 0 #Reiniciar para el siguiente intento
+            estado = 0 # Reiniciar para el siguiente intento
         else:
             estado = nuevo_estado
 
